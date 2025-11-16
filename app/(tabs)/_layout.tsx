@@ -1,33 +1,43 @@
+// app/(tabs)/_layout.tsx
+import { Ionicons } from '@expo/vector-icons'; // Import an icon set
 import { Tabs } from 'expo-router';
-import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+    <Tabs 
+      screenOptions={{ 
+        tabBarActiveTintColor: 'blue', // Sets the color for the active tab
+        headerShown: false, // Hides the header for all tab screens
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          headerShown: true, // Show header *only* for the home screen
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="pets"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'My Pets',
+          headerShown: true, // Show header for this screen
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="paw-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="regulations"
+        options={{
+          title: 'Regulations',
+          headerShown: true, // Show header for this screen
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="airplane-outline" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
