@@ -1,40 +1,45 @@
 // app/_layout.tsx
+import {
+  Poppins_400Regular
+} from '@expo-google-fonts/poppins';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme'; // Your theme hook
-import { AuthProvider, useAuth } from '../contexts/AuthContext'; // Our Auth logic
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AuthProvider, useAuth } from '../contexts/AuthContext';
 
-// This is the "security guard" component
+// 1. Prevent the splash screen from auto-hiding until fonts are loaded
+SplashScreen.preventAutoHideAsync();
+
+// --- The "Security Guard" Component ---
 function AuthLayout() {
   const { user, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
-    if (loading || !segments) {
-      return;
-    }
+    if (loading || !segments) return;
 
     const inAuthGroup = segments[0] === '(auth)';
 
     if (user && inAuthGroup) {
-      // User is logged in, redirect from (auth) group to home
       router.replace('/(tabs)/home');
     } else if (!user && !inAuthGroup) {
-      // User is not logged in, redirect from app to login
       router.replace('/(auth)/login');
     }
   }, [user, loading, segments, router]);
 
-  // Define all the screens for your app
   return (
     <Stack>
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      
+      {/* Modals */}
       <Stack.Screen 
         name="add-pet" 
         options={{ title: "Add New Pet", presentation: "modal" }} 
@@ -43,26 +48,49 @@ function AuthLayout() {
         name="add-trip" 
         options={{ title: "Add New Trip", presentation: "modal" }} 
       />
+      
+      {/* Dynamic Pages */}
       <Stack.Screen name="checklist/[tripId]" options={{ title: "Trip Checklist" }} />
-      <Stack.Screen name="qrcode/[tripId]" options={{ title: "Boarding QR Code" }} />
+      <Stack.Screen 
+        name="qrcode/[tripId]" 
+        options={{ 
+          title: "Boarding QR Code",
+          headerShown: false 
+        }} 
+      />
     </Stack>
   );
 }
 
-// This is the main RootLayout
+// --- Main Root Layout ---
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
-  return (
-    // 1. Your Theme Provider (outermost)
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      
-      {/* 2. Our Auth Provider (wraps everything) */}
-      <AuthProvider>
-        
-        {/* 3. Our AuthLayout (contains the Stack and redirect logic) */}
-        <AuthLayout />
+  // 2. Load the fonts (TEMPORARILY LOADING ONLY ONE VARIANT)
+  const [fontsLoaded] = useFonts({
+    'Poppins-Regular': Poppins_400Regular,
+    // COMMENTED OUT TO DEBUG:
+    // 'Poppins-Medium': Poppins_500Medium,
+    // 'Poppins-SemiBold': Poppins_600SemiBold,
+    // 'Poppins-Bold': Poppins_700Bold,
+  });
 
+  // 3. Hide splash screen once fonts are loaded
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  // 4. Keep Splash Screen visible while fonts load
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <AuthProvider>
+        <AuthLayout />
         <StatusBar style="auto" />
       </AuthProvider>
     </ThemeProvider>
