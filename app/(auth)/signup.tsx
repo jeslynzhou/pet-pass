@@ -22,15 +22,15 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
 
   const handleSignUp = () => {
-    // Basic validation (you'd have more robust logic here)
     if (!name || !email || !password) {
       Alert.alert('Error', 'Please fill in all fields.');
       return;
     }
     
-    // Just pretend it works and send the user to the login screen
-    Alert.alert('Success', 'Account created! Please log in.');
-    router.replace('/(auth)/login'); // Use replace to clear signup from history
+    // SUCCESS! Now navigate to the "Add Pet" screen
+    // Note: We use 'push' so the user can't go 'back' to signup easily, 
+    // or 'replace' if we want to block them from going back.
+    router.push('/(auth)/create-pet'); 
   };
 
   return (
