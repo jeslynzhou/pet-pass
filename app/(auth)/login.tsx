@@ -1,50 +1,60 @@
 // app/(auth)/login.tsx
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router'; // 1. Import Router
 import React, { useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useAuth } from '../../contexts/AuthContext'; // Import our new hook
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Login() {
-  const [email, setEmail] = useState('user@test.com'); // Pre-fill for demo
-  const [password, setPassword] = useState('password123'); // Pre-fill for demo
-  const { login } = useAuth(); // Get the login function
+  const router = useRouter(); // 2. Initialize Router
+  const { login } = useAuth();
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = () => {
+    // 3. Call the login function from Context
     const success = login(email, password);
-    if (!success) {
-      alert('Invalid credentials. Try: user@test.com / password123');
+
+    if (success) {
+      // 4. IF SUCCESSFUL, MANUALLY REDIRECT
+      console.log("Login successful, redirecting...");
+      router.replace('/(tabs)/home'); 
+    } else {
+      Alert.alert("Login Failed", "Invalid email or password");
     }
-    // The root _layout will handle redirecting if login is successful
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.title}>Welcome Back!</Text>
+      
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="Email (user@test.com)"
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
       />
+      
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Password (password123)"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Login" onPress={handleLogin} />
-      <Link href="/(auth)/signup" style={styles.link}>
-        Don&apos;t have an account? Sign Up
-      </Link>
+      
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Log In</Text>
+      </TouchableOpacity>
     </View>
   );
 }
-// Add simple styles
+
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 16 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16, textAlign: 'center' },
-  input: { height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 12, padding: 8, borderRadius: 5 },
-  link: { marginTop: 16, textAlign: 'center', color: 'blue' },
+  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#fff' },
+  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 30, textAlign: 'center' },
+  input: { height: 50, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, paddingHorizontal: 15, marginBottom: 15 },
+  button: { backgroundColor: '#007AFF', height: 50, borderRadius: 8, justifyContent: 'center', alignItems: 'center' },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 });
