@@ -37,7 +37,7 @@ export default function Login() {
       <View style={styles.container}>
         {/* Pet Illustration */}
         <Image 
-          source={require('../../assets/images/pet.png')}
+          source={require('../../assets/images/pet_log_in.png')}
           style={styles.petImage} 
           resizeMode="contain"
         />
