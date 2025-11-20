@@ -1,6 +1,13 @@
 // contexts/AuthContext.tsx
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'; // 1. Import useEffect
-import { FAKE_USER } from '../data/mockData';
+
+
+// --- DEFINING MOCK USER DIRECTLY HERE ---
+export const FAKE_USER = {
+  uid: 'fake-user-uid',
+  email: 'user@test.com',
+  name: 'Demo User',
+};
 
 type FakeUser = typeof FAKE_USER;
 

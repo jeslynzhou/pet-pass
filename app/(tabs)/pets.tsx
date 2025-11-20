@@ -131,7 +131,7 @@ export default function Pets() {
         {/* Add Pet Button */}
         <TouchableOpacity 
           style={styles.addButton} 
-          onPress={() => router.push('/(auth)/create-pet')} // Corrected Route
+          onPress={() => router.push('/add-pet')} // Corrected Route
           activeOpacity={0.8}
         >
           <View style={styles.addIconCircle}>
