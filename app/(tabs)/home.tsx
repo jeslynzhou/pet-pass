@@ -2,24 +2,25 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// 1. IMPORT SAFE AREA VIEW
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
 
 // --- Theme Constants ---
 const COLORS = {
-  primary: '#0066CC',      // Deep Brand Blue
-  background: '#def4ff',   // Your requested light blue
-  cardBg: '#FFFFFF',       // White for cards
-  textDark: '#1E293B',     // Dark Slate for headings
-  textGray: '#64748B',     // Cool Gray for subtitles
-  accent: '#FF9500',       // Orange for action icons
-  success: '#10B981',      // Green for regulations
+  primary: '#0066CC',
+  background: '#def4ff',
+  cardBg: '#FFFFFF',
+  textDark: '#1E293B',
+  textGray: '#64748B',
+  accent: '#FF9500',
+  success: '#10B981',
 };
 
 export default function Home() {
   const router = useRouter();
-  const { logout } = useAuth(); // You can use 'user' here to get the name if available
+  const { logout } = useAuth();
 
-  // Mock Data
   const upcomingTrip = {
     id: 'trip_123',
     destination: 'San Francisco',
@@ -29,6 +30,8 @@ export default function Home() {
   };
 
   return (
+    // 2. WRAP EVERYTHING IN SAFEAREAVIEW
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         
         {/* --- HEADER --- */}
@@ -95,7 +98,6 @@ export default function Home() {
         <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.actionList}>
           
-          {/* 1. My Pets */}
           <TouchableOpacity style={styles.actionRow} onPress={() => router.push('/(tabs)/pets')}>
             <View style={[styles.iconCircle, { backgroundColor: '#E0F2FE' }]}>
               <Ionicons name="paw" size={22} color={COLORS.primary} />
@@ -107,7 +109,6 @@ export default function Home() {
             <Ionicons name="chevron-forward" size={18} color={COLORS.textGray} />
           </TouchableOpacity>
 
-          {/* 2. Regulations */}
           <TouchableOpacity style={styles.actionRow} onPress={() => router.push('/(tabs)/regulations')}>
             <View style={[styles.iconCircle, { backgroundColor: '#DCFCE7' }]}>
               <Ionicons name="document-text" size={22} color={COLORS.success} />
@@ -119,7 +120,6 @@ export default function Home() {
             <Ionicons name="chevron-forward" size={18} color={COLORS.textGray} />
           </TouchableOpacity>
 
-          {/* 3. Pet Pass QR */}
           <TouchableOpacity 
             style={[styles.actionRow, { borderBottomWidth: 0 }]} 
             onPress={() => {
@@ -140,14 +140,20 @@ export default function Home() {
         </View>
 
       </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  // 3. ADD STYLE FOR SAFE AREA
+  safeArea: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
   scrollContainer: {
     padding: 24,
     paddingBottom: 50,
-    backgroundColor: COLORS.background,
+    // Remove background color here if it is on safeArea, or keep it.
   },
 
   // Header
@@ -199,7 +205,6 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     position: 'relative',
     overflow: 'hidden',
-    // Deep Shadow
     shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
