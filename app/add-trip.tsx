@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../contexts/AuthContext";
 
 // --- Theme Constants ---
 const COLORS = {
@@ -139,6 +140,7 @@ const CustomDropdown = ({ label, value, options, onSelect, icon }: any) => {
 
 export default function AddTrip() {
   const router = useRouter();
+  const { createTrip } = useAuth();
 
   // State
   const [pet, setPet] = useState(PETS[0]);
@@ -151,6 +153,7 @@ export default function AddTrip() {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const generateChecklistAndSave = () => {
+    createTrip(); // Set global trip state
     const fakeTripId = `trip-${Date.now()}`;
     router.replace(`/checklist/${fakeTripId}`);
   };

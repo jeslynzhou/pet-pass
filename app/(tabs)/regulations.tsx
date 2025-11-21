@@ -21,104 +21,190 @@ const COLORS = {
   accent: "#FF9500",
   success: "#10B981",
   border: "#E0E7ED",
+  warning: "#F59E0B",
 };
 
-// --- DROPDOWN OPTIONS ---
-const ORIGIN_OPTIONS = [
+// --- LOCATION OPTIONS ---
+const DEPARTURE_OPTIONS = [
   "Santiago, Chile",
   "Lima, Peru",
   "Buenos Aires, Argentina",
   "Bogota, Colombia",
   "Sao Paulo, Brazil",
+  "Mexico City, Mexico",
 ];
 
 const DESTINATION_OPTIONS = [
-  "San Francisco, USA",
-  "Miami, USA",
-  "New York, USA",
-  "Madrid, Spain",
-  "Paris, France",
+  "United States",
+  "Canada",
+  "United Kingdom",
+  "Australia",
+  "Germany",
+  "France",
+  "Spain",
 ];
 
-// Updated with Latin American Airlines
+// --- AIRLINE OPTIONS ---
 const AIRLINE_OPTIONS = [
   "LATAM",
-  "Sky Airline",
-  "JetSMART",
-  "Copa Airlines",
-  "Avianca",
   "United Airlines",
+  "Delta Air Lines",
   "American Airlines",
-  "Delta",
+  "Air Canada",
+  "British Airways",
+  "Lufthansa",
 ];
 
-// --- RULES DATA ---
-const COUNTRY_RULES = {
-  USA: [
-    {
-      id: 1,
-      title: "Rabies Vaccination",
-      desc: "Must be administered at least 28 days before arrival.",
-    },
-    {
-      id: 2,
-      title: "CDC Dog Import Form",
-      desc: "Receipt must be shown at check-in.",
-    },
-    {
-      id: 3,
-      title: "Microchip",
-      desc: "ISO 11784/11785 compatible (15 digits).",
-    },
-    {
-      id: 4,
-      title: "Health Certificate",
-      desc: "Issued by a vet within 10 days of travel.",
-    },
-  ],
+// --- DESTINATION REGULATIONS DATA ---
+const DESTINATION_REGULATIONS = {
+  "United States": {
+    icon: "flag" as const,
+    color: COLORS.primary,
+    timeline: [
+      {
+        phase: "60+ Days Before Travel",
+        items: [
+          "Get dog microchipped (before rabies vaccination)",
+          "Verify microchip number with veterinarian",
+          "Ensure rabies vaccination won't expire during travel",
+          "Get rabies vaccination or booster if needed",
+          "Collect blood sample for rabies serology titer (30+ days after first vaccine)",
+        ],
+      },
+      {
+        phase: "30 Days Before Travel",
+        items: [
+          "Complete Certification of Foreign Rabies Vaccination form with veterinarian",
+          "Get form endorsed by official government veterinarian",
+          "Reserve spot at CDC-registered animal care facility",
+          "Print reservation confirmation",
+        ],
+      },
+      {
+        phase: "Week of Travel",
+        items: [
+          "Complete CDC Dog Import Form online",
+          "Print two copies of vaccination certification",
+          "Take recent photo of dog (within 15 days if under 1 year old)",
+        ],
+      },
+    ],
+    requirements: [
+      "Dog must be at least 6 months old",
+      "Valid rabies vaccination from approved country",
+      "Microchip implanted before rabies vaccination",
+      "Rabies serology titer from CDC-approved lab",
+      "Health certificate from accredited veterinarian",
+    ],
+  },
+  Canada: {
+    icon: "flag" as const,
+    color: COLORS.accent,
+    timeline: [
+      {
+        phase: "30 Days Before Travel",
+        items: [
+          "Get health certificate from accredited veterinarian",
+          "Ensure rabies vaccination is current",
+          "Verify microchip identification",
+        ],
+      },
+    ],
+    requirements: [
+      "Valid rabies vaccination certificate",
+      "Health certificate issued within 30 days",
+      "Microchip for identification",
+      "Dog must be at least 3 months old",
+    ],
+  },
+  "United Kingdom": {
+    icon: "flag" as const,
+    color: COLORS.success,
+    timeline: [
+      {
+        phase: "4 Months Before Travel",
+        items: [
+          "Get dog microchipped",
+          "Get rabies vaccination (after microchip)",
+          "Wait 21 days after vaccination",
+          "Get rabies antibody blood test",
+        ],
+      },
+      {
+        phase: "10 Days Before Travel",
+        items: [
+          "Get health certificate from official veterinarian",
+          "Arrange for treatment against tapeworm",
+        ],
+      },
+    ],
+    requirements: [
+      "EU pet passport or health certificate",
+      "Rabies vaccination with 21-day wait period",
+      "Microchip identification",
+      "Rabies antibody test from EU-approved lab",
+      "Tapeworm treatment 1-5 days before travel",
+    ],
+  },
 };
 
-// Updated Rules for LATAM/Chilean Airlines
-const AIRLINE_RULES: Record<string, any> = {
+// --- AIRLINE REGULATIONS DATA ---
+const AIRLINE_REGULATIONS = {
   LATAM: {
-    weight: "Max 7kg (pet + carrier)",
-    carrier: "Soft: 36 x 33 x 23 cm / Hard: 36 x 33 x 19 cm",
-    restrictions: "No brachycephalic dogs in hold. 8 weeks min age.",
-  },
-  "Sky Airline": {
-    weight: "Max 6kg (pet + carrier)",
-    carrier: "Soft: 35 x 33 x 17 cm",
-    restrictions: "Cabin only. 1 pet per passenger.",
-  },
-  JetSMART: {
-    weight: "Max 10kg (pet + carrier)",
-    carrier: "Soft: 38 x 35 x 22 cm",
-    restrictions: "No pets in exit rows. Dogs & Cats only.",
-  },
-  "Copa Airlines": {
-    weight: "Max 10kg (pet + carrier)",
-    carrier: "Soft preferred: 28 x 45 x 28 cm",
-    restrictions: "No pets in Business Class.",
-  },
-  Avianca: {
-    weight: "Max 10kg (pet + carrier)",
-    carrier: "Soft: 55 x 35 x 25 cm (Flexible)",
-    restrictions: "Must fit fully inside carrier.",
+    icon: "airplane" as const,
+    color: COLORS.primary,
+    policies: [
+      "Advance booking required for pet travel",
+      "Maximum 2 pets per passenger",
+      "Carrier size: 45cm x 35cm x 25cm for cabin",
+      "Pet must remain in carrier during flight",
+      "Additional fee: $150-300 depending on route",
+    ],
+    restrictions: [
+      "No pets allowed on flights over 8 hours",
+      "Temperature restrictions apply",
+      "Breed restrictions for snub-nosed dogs",
+      "Health certificate required within 10 days",
+    ],
   },
   "United Airlines": {
-    weight: "No specific limit (must fit comfortably)",
-    carrier: "Hard: 44 x 30 x 19 cm / Soft: 45 x 27 x 27 cm",
-    restrictions: "Must stand and turn around in carrier.",
+    icon: "airplane" as const,
+    color: COLORS.accent,
+    policies: [
+      "PetSafe program for cargo transport",
+      "In-cabin pets up to 9kg including carrier",
+      "Carrier dimensions: 46cm x 28cm x 24cm",
+      "Advance reservation required",
+      "Fee: $125 each way for in-cabin",
+    ],
+    restrictions: [
+      "No pets as cargo during summer months",
+      "Breed restrictions apply",
+      "Age restrictions: minimum 4 months old",
+      "Health documentation required",
+    ],
   },
-  Default: {
-    weight: "Standard: Max 8kg usually",
-    carrier: "Standard: 40 x 30 x 20 cm",
-    restrictions: "Check specific airline website.",
+  "Delta Air Lines": {
+    icon: "airplane" as const,
+    color: COLORS.success,
+    policies: [
+      "Carry-on pets allowed in cabin",
+      "Cargo pet transport available year-round",
+      "Carrier size: 48cm x 33cm x 23cm maximum",
+      "Online pet booking system available",
+      "Fee: $125-200 depending on destination",
+    ],
+    restrictions: [
+      "No more than 2 pets per cabin",
+      "Embargo dates during extreme weather",
+      "Vaccination requirements strictly enforced",
+      "Professional health certificate required",
+    ],
   },
 };
 
-// --- REUSABLE DROPDOWN COMPONENT ---
-const CustomDropdown = ({ label, value, options, onSelect }: any) => {
+// --- DROPDOWN COMPONENT ---
+const CustomDropdown = ({ label, value, options, onSelect, icon }: any) => {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -129,7 +215,19 @@ const CustomDropdown = ({ label, value, options, onSelect }: any) => {
         onPress={() => setVisible(true)}
         activeOpacity={0.8}
       >
-        <Text style={styles.dropdownText}>{value}</Text>
+        <View style={styles.dropdownContent}>
+          <Ionicons
+            name={icon}
+            size={20}
+            color={COLORS.primary}
+            style={{ marginRight: 10 }}
+          />
+          <Text
+            style={[styles.dropdownText, !value && { color: COLORS.textGray }]}
+          >
+            {value || `Select ${label}`}
+          </Text>
+        </View>
         <Ionicons name="chevron-down" size={20} color={COLORS.textGray} />
       </TouchableOpacity>
 
@@ -155,23 +253,14 @@ const CustomDropdown = ({ label, value, options, onSelect }: any) => {
                   <Text
                     style={[
                       styles.optionText,
-                      item === value && {
-                        color: COLORS.primary,
-                        fontFamily: "Poppins_600SemiBold",
-                      },
+                      value === item && { color: COLORS.primary },
                     ]}
                   >
                     {item}
                   </Text>
-                  {item === value && (
-                    <Ionicons
-                      name="checkmark"
-                      size={20}
-                      color={COLORS.primary}
-                    />
-                  )}
                 </TouchableOpacity>
               )}
+              showsVerticalScrollIndicator={false}
             />
             <TouchableOpacity
               style={styles.closeButton}
@@ -187,178 +276,246 @@ const CustomDropdown = ({ label, value, options, onSelect }: any) => {
 };
 
 export default function Regulations() {
-  const [origin, setOrigin] = useState(ORIGIN_OPTIONS[0]);
-  const [destination, setDestination] = useState(DESTINATION_OPTIONS[0]);
-  const [airline, setAirline] = useState(AIRLINE_OPTIONS[0]);
-
+  const [departure, setDeparture] = useState("");
+  const [destination, setDestination] = useState("");
+  const [airline, setAirline] = useState("");
+  const [expandedDestination, setExpandedDestination] = useState(false);
+  const [expandedAirline, setExpandedAirline] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [isSupportedRoute, setIsSupportedRoute] = useState(false);
 
   const handleSearch = () => {
-    setHasSearched(true);
-    if (origin.includes("Santiago") && destination.includes("New York")) {
-      setIsSupportedRoute(true);
-    } else {
-      setIsSupportedRoute(false);
+    if (departure && destination && airline) {
+      setHasSearched(true);
     }
   };
 
-  const currentAirlineRules =
-    AIRLINE_RULES[airline] || AIRLINE_RULES["Default"];
+  const destinationData =
+    DESTINATION_REGULATIONS[
+      destination as keyof typeof DESTINATION_REGULATIONS
+    ];
+  const airlineData =
+    AIRLINE_REGULATIONS[airline as keyof typeof AIRLINE_REGULATIONS];
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Travel Regulations</Text>
-        <Text style={styles.headerSubtitle}>
-          Find rules for your specific route.
-        </Text>
-      </View>
-
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/* --- SEARCH BOX --- */}
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Travel Regulations</Text>
+          <Text style={styles.headerSubtitle}>
+            Search destination and airline requirements
+          </Text>
+        </View>
+
+        {/* Search Form */}
         <View style={styles.searchCard}>
+          <Text style={styles.searchTitle}>Plan Your Trip</Text>
+          <Text style={styles.searchDescription}>
+            Select your travel details to view specific regulations and
+            requirements.
+          </Text>
+
           <CustomDropdown
-            label="From"
-            value={origin}
-            options={ORIGIN_OPTIONS}
-            onSelect={setOrigin}
+            label="Departure"
+            value={departure}
+            options={DEPARTURE_OPTIONS}
+            onSelect={setDeparture}
+            icon="location"
           />
-          <View style={styles.arrowContainer}>
-            <Ionicons name="arrow-down" size={24} color={COLORS.primary} />
-          </View>
+
           <CustomDropdown
-            label="To"
+            label="Destination"
             value={destination}
             options={DESTINATION_OPTIONS}
             onSelect={setDestination}
+            icon="flag"
           />
-          <View style={{ height: 20 }} />
+
           <CustomDropdown
             label="Airline"
             value={airline}
             options={AIRLINE_OPTIONS}
             onSelect={setAirline}
+            icon="airplane"
           />
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-            <Text style={styles.searchButtonText}>Check Regulations</Text>
+
+          <TouchableOpacity
+            style={[
+              styles.searchButton,
+              !(departure && destination && airline) &&
+                styles.searchButtonDisabled,
+            ]}
+            onPress={handleSearch}
+            activeOpacity={0.8}
+            disabled={!(departure && destination && airline)}
+          >
+            <Ionicons name="search" size={20} color={COLORS.cardBg} />
+            <Text style={styles.searchButtonText}>Search Requirements</Text>
           </TouchableOpacity>
         </View>
 
-        {/* --- RESULTS --- */}
-        {hasSearched && (
-          <View style={styles.resultsContainer}>
-            {isSupportedRoute ? (
-              <>
-                {/* Section A: Government Rules */}
-                <View style={styles.resultSection}>
-                  <View style={styles.sectionHeader}>
-                    <View
-                      style={[
-                        styles.iconCircle,
-                        { backgroundColor: "#DCFCE7" },
-                      ]}
-                    >
-                      <Ionicons name="earth" size={20} color={COLORS.success} />
+        {/* Results */}
+        {hasSearched && destinationData && airlineData && (
+          <>
+            {/* Route Summary */}
+            <View style={styles.routeSummary}>
+              <Text style={styles.routeText}>
+                {departure} → {destination} via {airline}
+              </Text>
+            </View>
+
+            {/* Destination Regulations */}
+            <TouchableOpacity
+              style={styles.regulationCard}
+              onPress={() => setExpandedDestination(!expandedDestination)}
+              activeOpacity={0.8}
+            >
+              <View style={styles.regulationHeader}>
+                <View
+                  style={[
+                    styles.regulationIcon,
+                    { backgroundColor: `${destinationData.color}15` },
+                  ]}
+                >
+                  <Ionicons
+                    name={destinationData.icon}
+                    size={24}
+                    color={destinationData.color}
+                  />
+                </View>
+                <View style={styles.regulationContent}>
+                  <Text style={styles.regulationTitle}>
+                    {destination} Requirements
+                  </Text>
+                  <Text style={styles.regulationSubtitle}>
+                    Destination country regulations
+                  </Text>
+                </View>
+                <Ionicons
+                  name={expandedDestination ? "chevron-up" : "chevron-down"}
+                  size={20}
+                  color={COLORS.textGray}
+                />
+              </View>
+
+              {expandedDestination && (
+                <View style={styles.regulationDetails}>
+                  {destinationData.timeline.map((phase, index) => (
+                    <View key={index} style={styles.timelinePhase}>
+                      <Text style={styles.phaseTitle}>{phase.phase}</Text>
+                      {phase.items.map((item, idx) => (
+                        <View key={idx} style={styles.requirementRow}>
+                          <View style={styles.bulletPoint} />
+                          <Text style={styles.requirementText}>{item}</Text>
+                        </View>
+                      ))}
                     </View>
-                    <Text style={styles.sectionTitle}>
-                      Entry Requirements (USA)
-                    </Text>
-                  </View>
-                  <View style={styles.infoCard}>
-                    {COUNTRY_RULES.USA.map((rule) => (
-                      <View key={rule.id} style={styles.ruleRow}>
+                  ))}
+
+                  <View style={styles.additionalRequirements}>
+                    <Text style={styles.additionalTitle}>Key Requirements</Text>
+                    {destinationData.requirements.map((req, index) => (
+                      <View key={index} style={styles.requirementRow}>
                         <Ionicons
                           name="checkmark-circle"
-                          size={20}
+                          size={16}
                           color={COLORS.success}
                         />
-                        <View style={styles.ruleContent}>
-                          <Text style={styles.ruleTitle}>{rule.title}</Text>
-                          <Text style={styles.ruleDesc}>{rule.desc}</Text>
-                        </View>
+                        <Text
+                          style={[styles.requirementText, { marginLeft: 8 }]}
+                        >
+                          {req}
+                        </Text>
                       </View>
                     ))}
                   </View>
                 </View>
+              )}
+            </TouchableOpacity>
 
-                {/* Section B: Airline Rules */}
-                <View style={styles.resultSection}>
-                  <View style={styles.sectionHeader}>
-                    <View
-                      style={[
-                        styles.iconCircle,
-                        { backgroundColor: "#E0F2FE" },
-                      ]}
-                    >
-                      <Ionicons
-                        name="airplane"
-                        size={20}
-                        color={COLORS.primary}
-                      />
-                    </View>
-                    <Text style={styles.sectionTitle}>
-                      Airline Policy ({airline})
-                    </Text>
+            {/* Airline Regulations */}
+            <TouchableOpacity
+              style={styles.regulationCard}
+              onPress={() => setExpandedAirline(!expandedAirline)}
+              activeOpacity={0.8}
+            >
+              <View style={styles.regulationHeader}>
+                <View
+                  style={[
+                    styles.regulationIcon,
+                    { backgroundColor: `${airlineData.color}15` },
+                  ]}
+                >
+                  <Ionicons
+                    name={airlineData.icon}
+                    size={24}
+                    color={airlineData.color}
+                  />
+                </View>
+                <View style={styles.regulationContent}>
+                  <Text style={styles.regulationTitle}>{airline} Policies</Text>
+                  <Text style={styles.regulationSubtitle}>
+                    Airline-specific pet policies
+                  </Text>
+                </View>
+                <Ionicons
+                  name={expandedAirline ? "chevron-up" : "chevron-down"}
+                  size={20}
+                  color={COLORS.textGray}
+                />
+              </View>
+
+              {expandedAirline && (
+                <View style={styles.regulationDetails}>
+                  <View style={styles.policySection}>
+                    <Text style={styles.policyTitle}>Pet Travel Policies</Text>
+                    {airlineData.policies.map((policy, index) => (
+                      <View key={index} style={styles.requirementRow}>
+                        <View style={styles.bulletPoint} />
+                        <Text style={styles.requirementText}>{policy}</Text>
+                      </View>
+                    ))}
                   </View>
 
-                  <View style={styles.infoCard}>
-                    <View style={styles.ruleRow}>
-                      <Ionicons name="scale" size={20} color={COLORS.primary} />
-                      <View style={styles.ruleContent}>
-                        <Text style={styles.ruleTitle}>Cabin Weight Limit</Text>
-                        <Text style={styles.ruleDesc}>
-                          {currentAirlineRules.weight}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.ruleRow}>
-                      <Ionicons
-                        name="briefcase"
-                        size={20}
-                        color={COLORS.primary}
-                      />
-                      <View style={styles.ruleContent}>
-                        <Text style={styles.ruleTitle}>Carrier Dimensions</Text>
-                        <Text style={styles.ruleDesc}>
-                          {currentAirlineRules.carrier}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.ruleRow}>
-                      <Ionicons
-                        name="alert-circle"
-                        size={20}
-                        color={COLORS.accent}
-                      />
-                      <View style={styles.ruleContent}>
+                  <View style={styles.policySection}>
+                    <Text style={styles.policyTitle}>
+                      Restrictions & Limitations
+                    </Text>
+                    {airlineData.restrictions.map((restriction, index) => (
+                      <View key={index} style={styles.requirementRow}>
+                        <Ionicons
+                          name="warning"
+                          size={16}
+                          color={COLORS.warning}
+                        />
                         <Text
-                          style={[styles.ruleTitle, { color: COLORS.accent }]}
+                          style={[styles.requirementText, { marginLeft: 8 }]}
                         >
-                          Restrictions
-                        </Text>
-                        <Text style={styles.ruleDesc}>
-                          {currentAirlineRules.restrictions}
+                          {restriction}
                         </Text>
                       </View>
-                    </View>
+                    ))}
                   </View>
                 </View>
-              </>
-            ) : (
-              // --- EMPTY STATE ---
-              <View style={styles.emptyState}>
-                <Ionicons name="search" size={48} color={COLORS.textGray} />
-                <Text style={styles.emptyTitle}>No Data Available</Text>
-                <Text style={styles.emptyText}>
-                  We currently only have verified data for the Santiago to New
-                  York route.
-                </Text>
-              </View>
-            )}
+              )}
+            </TouchableOpacity>
+          </>
+        )}
+
+        {/* Empty State */}
+        {!hasSearched && (
+          <View style={styles.emptyState}>
+            <Ionicons name="search" size={64} color={COLORS.textGray} />
+            <Text style={styles.emptyStateTitle}>
+              Search Travel Requirements
+            </Text>
+            <Text style={styles.emptyStateText}>
+              Select your departure, destination, and airline to view specific
+              pet travel regulations and requirements.
+            </Text>
           </View>
         )}
       </ScrollView>
@@ -371,161 +528,114 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
+  scrollContainer: {
+    padding: 24,
+    paddingBottom: 50,
+  },
   header: {
-    paddingHorizontal: 24,
-    paddingTop: 10,
-    paddingBottom: 20,
+    marginBottom: 25,
+    marginTop: 10,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 24,
     fontFamily: "Poppins_600SemiBold",
     color: COLORS.textDark,
+    marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
     fontFamily: "Poppins_400Regular",
     color: COLORS.textGray,
-    marginTop: 2,
   },
-  scrollContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 50,
-  },
-  // Search Card
   searchCard: {
     backgroundColor: COLORS.cardBg,
-    borderRadius: 20,
+    borderRadius: 24,
     padding: 20,
-    shadowColor: COLORS.primary,
+    marginBottom: 25,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.02,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 2,
+  },
+  searchTitle: {
+    fontSize: 18,
+    fontFamily: "Poppins_600SemiBold",
+    color: COLORS.textDark,
+    marginBottom: 6,
+  },
+  searchDescription: {
+    fontSize: 12,
+    fontFamily: "Poppins_400Regular",
+    color: COLORS.textGray,
     marginBottom: 20,
   },
-  dropdownWrapper: { marginBottom: 10 },
+  dropdownWrapper: {
+    marginBottom: 16,
+  },
   inputLabel: {
     fontSize: 12,
     fontFamily: "Poppins_600SemiBold",
-    color: COLORS.textGray,
-    marginBottom: 5,
+    color: COLORS.textDark,
+    marginBottom: 8,
   },
   dropdownButton: {
+    backgroundColor: COLORS.background,
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#F1F5F9",
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
+  },
+  dropdownContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
   },
   dropdownText: {
     fontSize: 14,
     fontFamily: "Poppins_400Regular",
     color: COLORS.textDark,
   },
-  arrowContainer: {
-    alignItems: "center",
-    marginVertical: -5,
-    zIndex: 1,
-  },
   searchButton: {
     backgroundColor: COLORS.primary,
-    paddingVertical: 14,
-    borderRadius: 12,
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  searchButtonDisabled: {
+    backgroundColor: COLORS.textGray,
+    shadowOpacity: 0,
   },
   searchButtonText: {
-    color: "#FFF",
+    color: COLORS.cardBg,
     fontSize: 16,
     fontFamily: "Poppins_600SemiBold",
+    marginLeft: 8,
   },
-  // Results
-  resultsContainer: { marginTop: 10 },
-  resultSection: { marginBottom: 25 },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  iconCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontFamily: "Poppins_600SemiBold",
-    color: COLORS.textDark,
-  },
-  infoCard: {
-    backgroundColor: COLORS.cardBg,
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  ruleRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 16,
-  },
-  ruleContent: { flex: 1, marginLeft: 12 },
-  ruleTitle: {
-    fontSize: 14,
-    fontFamily: "Poppins_600SemiBold",
-    color: COLORS.textDark,
-  },
-  ruleDesc: {
-    fontSize: 13,
-    fontFamily: "Poppins_400Regular",
-    color: COLORS.textGray,
-    marginTop: 2,
-    lineHeight: 20,
-  },
-  // Empty State
-  emptyState: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 30,
-    backgroundColor: "rgba(255,255,255,0.5)",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderStyle: "dashed",
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontFamily: "Poppins_600SemiBold",
-    color: COLORS.textDark,
-    marginTop: 15,
-    marginBottom: 5,
-  },
-  emptyText: {
-    fontSize: 14,
-    fontFamily: "Poppins_400Regular",
-    color: COLORS.textGray,
-    textAlign: "center",
-  },
-  // Modal
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-end",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
   },
   modalContent: {
     backgroundColor: COLORS.cardBg,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 24,
-    maxHeight: "60%",
+    borderRadius: 20,
+    padding: 20,
+    width: "100%",
+    maxHeight: "70%",
   },
   modalTitle: {
     fontSize: 18,
@@ -535,12 +645,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   optionItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: COLORS.border,
   },
   optionText: {
     fontSize: 16,
@@ -548,15 +656,138 @@ const styles = StyleSheet.create({
     color: COLORS.textDark,
   },
   closeButton: {
-    marginTop: 20,
-    paddingVertical: 12,
+    marginTop: 15,
+    padding: 12,
     alignItems: "center",
-    backgroundColor: "#F1F5F9",
-    borderRadius: 12,
   },
   closeButtonText: {
     fontSize: 14,
     fontFamily: "Poppins_600SemiBold",
     color: COLORS.textGray,
+  },
+  routeSummary: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  routeText: {
+    color: COLORS.cardBg,
+    fontSize: 16,
+    fontFamily: "Poppins_600SemiBold",
+  },
+  regulationCard: {
+    backgroundColor: COLORS.cardBg,
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.02,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  regulationHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  regulationIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+  },
+  regulationContent: {
+    flex: 1,
+  },
+  regulationTitle: {
+    fontSize: 16,
+    fontFamily: "Poppins_600SemiBold",
+    color: COLORS.textDark,
+    marginBottom: 2,
+  },
+  regulationSubtitle: {
+    fontSize: 12,
+    fontFamily: "Poppins_400Regular",
+    color: COLORS.textGray,
+  },
+  regulationDetails: {
+    marginTop: 20,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+  },
+  timelinePhase: {
+    marginBottom: 20,
+  },
+  phaseTitle: {
+    fontSize: 14,
+    fontFamily: "Poppins_600SemiBold",
+    color: COLORS.primary,
+    marginBottom: 12,
+  },
+  additionalRequirements: {
+    marginTop: 15,
+    paddingTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+  },
+  additionalTitle: {
+    fontSize: 14,
+    fontFamily: "Poppins_600SemiBold",
+    color: COLORS.textDark,
+    marginBottom: 12,
+  },
+  policySection: {
+    marginBottom: 20,
+  },
+  policyTitle: {
+    fontSize: 14,
+    fontFamily: "Poppins_600SemiBold",
+    color: COLORS.textDark,
+    marginBottom: 12,
+  },
+  requirementRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 8,
+  },
+  bulletPoint: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: COLORS.primary,
+    marginTop: 6,
+    marginRight: 10,
+  },
+  requirementText: {
+    flex: 1,
+    fontSize: 12,
+    fontFamily: "Poppins_400Regular",
+    color: COLORS.textDark,
+    lineHeight: 16,
+  },
+  emptyState: {
+    alignItems: "center",
+    paddingVertical: 60,
+    paddingHorizontal: 20,
+  },
+  emptyStateTitle: {
+    fontSize: 20,
+    fontFamily: "Poppins_600SemiBold",
+    color: COLORS.textDark,
+    marginTop: 20,
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  emptyStateText: {
+    fontSize: 14,
+    fontFamily: "Poppins_400Regular",
+    color: COLORS.textGray,
+    textAlign: "center",
+    lineHeight: 20,
   },
 });

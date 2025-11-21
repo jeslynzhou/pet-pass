@@ -22,7 +22,7 @@ export default function QRCodeScreen() {
   // Mock Data
   const ticketData = {
     origin: "SCL",
-    destination: "SFO",
+    destination: "JFK",
     flight: "LA 602",
     date: "Dec 16",
     seat: "4A",
