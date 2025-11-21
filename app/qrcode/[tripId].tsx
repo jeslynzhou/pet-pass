@@ -65,7 +65,7 @@ export default function QRCodeScreen() {
                   <Text style={styles.airportCode}>
                     {ticketData.destination}
                   </Text>
-                  <Text style={styles.cityName}>San Francisco</Text>
+                  <Text style={styles.cityName}>New York</Text>
                 </View>
               </View>
 

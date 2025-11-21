@@ -159,8 +159,8 @@ export default function Checklist() {
               </View>
               <Ionicons name="airplane" size={20} color={COLORS.primary} />
               <View style={{ alignItems: "flex-end" }}>
-                <Text style={styles.airportCode}>SFO</Text>
-                <Text style={styles.city}>San Francisco</Text>
+                <Text style={styles.airportCode}>JFK</Text>
+                <Text style={styles.city}>New York</Text>
               </View>
             </View>
 
